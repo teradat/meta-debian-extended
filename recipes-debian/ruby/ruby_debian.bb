@@ -77,6 +77,8 @@ FILES_${PN} += "${libdir}/ruby/gems"
 FILES_${PN} += "${libdir}/ruby/site_ruby"
 FILES_${PN} += "${libdir}/ruby/vendor_ruby"
 
+RDEPENDS_${PN}-ptest += " ${PN}-rdoc ${PN}-ri-docs "
+RDEPENDS_${PN}-ptest += " openssl readline libyaml zlib libffi gmp gperf tzdata"
 FILES_${PN}-ptest_append_class-target += "${libdir}/ruby/include"
 
 BBCLASSEXTEND = "native"

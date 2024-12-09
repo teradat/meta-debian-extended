@@ -1,0 +1,38 @@
+From 67fd07738d07ebe8c7a659ef40408240bfc34549 Mon Sep 17 00:00:00 2001
+From: nobu <nobu@b2dd03c8-39d4-4d8f-98ff-823fe69b080e>
+Date: Mon, 25 Dec 2017 23:33:52 +0000
+Subject: test/ruby/test_process.rb: get rid of timing issue
+
+git-svn-id: svn+ssh://ci.ruby-lang.org/ruby/trunk@61476 b2dd03c8-39d4-4d8f-98ff-823fe69b080e
+---
+ test/ruby/test_process.rb | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/test/ruby/test_process.rb b/test/ruby/test_process.rb
+index eb114dbebb..28a2f05a85 100644
+--- a/test/ruby/test_process.rb
++++ b/test/ruby/test_process.rb
+@@ -676,14 +676,17 @@ class TestProcess < Test::Unit::TestCase
+         return
+       end
+       IO.popen([RUBY, '-e', <<-'EOS']) {|io|
++        STDOUT.sync = true
+         trap(:USR1) { print "trap\n" }
++        puts "start"
+         system("cat", :in => "fifo")
+       EOS
+-        sleep 1
++        assert_equal("start\n", io.gets)
++        sleep 0.2 # wait for the child to stop at opening "fifo"
+         Process.kill(:USR1, io.pid)
+-        sleep 1
++        assert_equal("trap\n", io.readpartial(8))
+         File.write("fifo", "ok\n")
+-        assert_equal("trap\nok\n", io.read)
++        assert_equal("ok\n", io.read)
+       }
+     }
+   end unless windows? # does not support fifo
+-- 
+cgit v1.2.3
+

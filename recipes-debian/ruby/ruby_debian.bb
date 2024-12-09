@@ -10,6 +10,7 @@ require ruby.inc
 SRC_URI += " \
            file://0001-configure.ac-check-finite-isinf-isnan-as-macros-firs.patch \
            file://run-ptest \
+           file://get-rid-of-timing-issue.patch \
            "
 
 PACKAGECONFIG ??= ""

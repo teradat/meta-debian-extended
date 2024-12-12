@@ -1,0 +1,43 @@
+From 5c7618269763139e1645bbb21fe286fcb0be7cdf Mon Sep 17 00:00:00 2001
+From: Takahiro Terada <takahiro.terada@miraclelinux.com>
+Date: Thu, 12 Dec 2024 10:39:11 +0000
+Subject: [PATCH] debian/tests/run-all: Fix result output to Automake format
+
+The Poky documentation states that the ptest result is Automake.[1]
+[1] https://wiki.yoctoproject.org/wiki/Ptest#What_constitutes_a_ptest?
+
+Signed-off-by: Takahiro Terada <takahiro.terada@miraclelinux.com>
+---
+ debian/tests/run-all | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/debian/tests/run-all b/debian/tests/run-all
+index 2e9aadd..4d8bbe8 100755
+--- a/debian/tests/run-all
++++ b/debian/tests/run-all
+@@ -40,17 +40,17 @@ excludes="$excludes --excludes-dir=${excludedir}/$(dpkg-architecture -qDEB_HOST_
+ 
+ for t in $tests; do
+   if ruby2.5 test/runner.rb -v $excludes --name='!/memory_leak/' $t >log 2>&1; then
+-    echo "PASS $t"
++    echo "PASS: $t"
+     pass=$(($pass + 1))
+   else
+     if grep "^$t$" $KNOW_FAILURES; then
+       fail_expected=$(($fail_expected + 1))
+-      echo "FAIL (EXPECTED) $t"
+-      echo "FAIL (EXPECTED) $t" | sed -e 's/./-/g'
++      echo "FAIL: (EXPECTED) $t"
++      echo "FAIL: (EXPECTED) $t" | sed -e 's/./-/g'
+     else
+       fail=$(($fail + 1))
+-      echo "FAIL $t"
+-      echo "FAIL $t" | sed -e 's/./-/g'
++      echo "FAIL: $t"
++      echo "FAIL: $t" | sed -e 's/./-/g'
+     fi
+     echo
+     cat log
+-- 
+2.25.1
+
